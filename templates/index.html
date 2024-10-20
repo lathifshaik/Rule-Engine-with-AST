@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .card-header {
+            border-radius: 15px 15px 0 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #3a3a3a;
+            color: #ffffff;
+        }
+        .btn-primary {
+            background: #4a4a4a;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #5a5a5a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(46, 89, 217, 0.2);
+        }
+        .form-control, .form-select {
+            background-color: #3a3a3a;
+            border-color: #4a4a4a;
+            color: #ffffff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #3a3a3a;
+            border-color: #5a5a5a;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(90, 90, 90, 0.25);
+        }
+        .list-group-item {
+            background: #2a2a2a;
+            color: #ffffff;
+            border-color: #3a3a3a;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .list-group-item:hover {
+            background: #3a3a3a;
+            transform: translateX(5px);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .shake {
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ffffff;
+            border-bottom: 2px solid #4a4a4a;
+            padding-bottom: 0.5rem;
+        }
+        .scrollable-rules {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .instructions {
+            font-size: 0.9rem;
+            color: #aaaaaa;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+        }
+        .edit-button {
+            margin-left: 10px;
+            padding: 2px 5px;
+            font-size: 0.8em;
+        }
+        .modal-content {
+            background-color: #2a2a2a;
+            color: #ffffff;
+        }
+        .modal-header {
+            border-bottom: 1px solid #3a3a3a;
+        }
+        .modal-footer {
+            border-top: 1px solid #3a3a3a;
+        }
+        .btn-close {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-5 fade-in">Rule Engine</h1>
+        
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Create and Evaluate Rules</h2>
+            </div>
+            <div class="col-md-6">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <i class="fas fa-plus-circle me-2"></i>Create Rule
+                    </div>
+                    <div class="card-body">
+                        <form id="createRuleForm">
+                            <div class="mb-3">
+                                <label for="ruleName" class="form-label">Rule Name</label>
+                                <input type="text" class="form-control" id="ruleName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ruleString" class="form-label">Rule String</label>
+                                <input type="text" class="form-control" id="ruleString" required>
+                                <div id="ruleStringFeedback" class="invalid-feedback"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Create Rule
+                            </button>
+                        </form>
+                    </div>
+                    <div class="instructions">
+                        Instructions: Enter a name for your rule and the rule string. The rule string should be a valid logical expression using operators like AND, OR, NOT, and parentheses.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <i class="fas fa-check-circle me-2"></i>Evaluate Rule
+                    </div>
+                    <div class="card-body">
+                        <form id="evaluateRuleForm">
+                            <div class="mb-3">
+                                <label for="ruleSelect" class="form-label">Select Rule</label>
+                                <select class="form-select" id="ruleSelect" required>
+                                    <option value="">Select a rule...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="jsonData" class="form-label">JSON Data</label>
+                                <textarea class="form-control" id="jsonData" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-play me-2"></i>Evaluate Rule
+                            </button>
+                        </form>
+                        <div id="evaluationResult" class="mt-3 alert alert-info d-none fade-in" role="alert"></div>
+                        <div id="missingFieldsError" class="mt-3 alert alert-danger d-none fade-in" role="alert"></div>
+                    </div>
+                    <div class="instructions">
+                        Instructions: Select a rule to evaluate and enter the JSON data to test against the rule. Ensure your JSON is properly formatted and includes all required fields.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Manage Rules</h2>
+            </div>
+            <div class="col-md-6">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <i class="fas fa-object-group me-2"></i>Combine Rules
+                    </div>
+                    <div class="card-body">
+                        <form id="combineRulesForm">
+                            <div class="mb-3">
+                                <label for="ruleIds" class="form-label">Rule IDs (comma-separated)</label>
+                                <input type="text" class="form-control" id="ruleIds" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="operator" class="form-label">Operator</label>
+                                <select class="form-select" id="operator" required>
+                                    <option value="AND">AND</option>
+                                    <option value="OR">OR</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-link me-2"></i>Combine Rules
+                            </button>
+                        </form>
+                        <div id="combinationResult" class="mt-3 alert alert-warning d-none fade-in" role="alert"></div>
+                    </div>
+                    <div class="instructions">
+                        Instructions: Enter the IDs of the rules you want to combine, separated by commas. Choose the operator (AND/OR) to combine the rules.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <i class="fas fa-list me-2"></i>All Rules
+                    </div>
+                    <div class="card-body">
+                        <button id="fetchRulesBtn" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-sync-alt me-2"></i>Fetch Rules
+                        </button>
+                        <div class="scrollable-rules">
+                            <ul id="rulesList" class="list-group"></ul>
+                        </div>
+                    </div>
+                    <div class="instructions">
+                        Instructions: Click the "Fetch Rules" button to retrieve and display all existing rules. Click the "Edit" button to modify a rule.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Rule Modal -->
+    <div class="modal fade" id="editRuleModal" tabindex="-1" aria-labelledby="editRuleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRuleModalLabel">Edit Rule</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editRuleForm">
+                        <input type="hidden" id="editRuleId">
+                        <div class="mb-3">
+                            <label for="editRuleName" class="form-label">Rule Name</label>
+                            <input type="text" class="form-control" id="editRuleName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editRuleString" class="form-label">Rule String</label>
+                            <input type="text" class="form-control" id="editRuleString" required>
+                            <div id="editRuleStringFeedback" class="invalid-feedback"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveEditedRule">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} fade-in position-fixed top-0 start-50 translate-middle-x mt-3 text-dark`;
+            notification.style.zIndex = '1000';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function validateParentheses(str) {
+            const stack = [];
+            for (let char of str) {
+                if (char === '(') {
+                    stack.push(char);
+                } else if (char === ')') {
+                    if (stack.length === 0) return false;
+                    stack.pop();
+                }
+            }
+            return stack.length === 0;
+        }
+
+        function validateJSON(jsonString) {
+            try {
+                JSON.parse(jsonString);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function fetchRules() {
+            return fetch('http://localhost:5000/rules')
+                .then(response => response.json())
+                .then(rules => {
+                    const rulesList = document.getElementById('rulesList');
+                    const ruleSelect = document.getElementById('ruleSelect');
+                    rulesList.innerHTML = '';
+                    ruleSelect.innerHTML = '<option value="">Select a rule...</option>';
+                    rules.forEach(rule => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item fade-in';
+                        li.innerHTML = `
+                            <strong>ID:</strong> ${rule.id}<br>
+                            <strong>Name:</strong> ${rule.name}<br>
+                            <strong>Rule:</strong> ${rule.rule_string}
+                            <button class="btn btn-sm btn-primary float-end edit-button" data-id="${rule.id}" data-name="${rule.name}" 
+                                data-rule="${rule.rule_string}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        `;
+                        rulesList.appendChild(li);
+
+                        const option = document.createElement('option');
+                        option.value = rule.id;
+                        option.textContent = rule.name;
+                        ruleSelect.appendChild(option);
+                    });
+                    return rules;
+                });
+        }
+
+        document.getElementById('createRuleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('ruleName').value;
+            const rule_string = document.getElementById('ruleString').value;
+            const ruleStringFeedback = document.getElementById('ruleStringFeedback');
+
+            if (!validateParentheses(rule_string)) {
+                ruleStringFeedback.textContent = 'Unbalanced parentheses in the rule string.';
+                document.getElementById('ruleString').classList.add('is-invalid');
+                return;
+            }
+
+            document.getElementById('ruleString').classList.remove('is-invalid');
+            
+            fetch('http://localhost:5000/create_rule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, rule_string }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                showNotification(`Rule created successfully! ID: ${data.id}`);
+                this.reset();
+                fetchRules();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while creating the rule.', 'danger');
+            });
+        });
+
+        document.getElementById('evaluateRuleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ruleId = document.getElementById('ruleSelect').value;
+            const jsonData = document.getElementById('jsonData').value;
+            const resultElement = document.getElementById('evaluationResult');
+            const missingFieldsError = document.getElementById('missingFieldsError');
+            
+            resultElement.classList.add('d-none');
+            missingFieldsError.classList.add('d-none');
+
+            if (!validateJSON(jsonData)) {
+                showNotification('Invalid JSON format. Please check your input.', 'danger');
+                return;
+            }
+
+            fetch(`http://localhost:5000/evaluate_rule/${ruleId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: jsonData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error && data.error.includes('Missing required fields')) {
+                    missingFieldsError.textContent = data.error;
+                    missingFieldsError.classList.remove('d-none');
+                } else {
+                    resultElement.textContent = `Result: ${data.result}`;
+                    resultElement.classList.remove('d-none');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while evaluating the rule.', 'danger');
+            });
+        });
+
+        document.getElementById('combineRulesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ruleIds = document.getElementById('ruleIds').value.split(',').map(id => parseInt(id.trim()));
+            const operator = document.getElementById('operator').value;
+            
+            fetch('http://localhost:5000/combine_rules', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rule_ids: ruleIds, operator }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultElement = document.getElementById('combinationResult');
+                resultElement.textContent = `Combined Rule ID: ${data.id}`;
+                resultElement.classList.remove('d-none');
+                fetchRules();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while combining the rules.', 'danger');
+            });
+        });
+
+        document.getElementById('fetchRulesBtn').addEventListener('click', function() {
+            const rulesList = document.getElementById('rulesList');
+            rulesList.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetchRules()
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred while fetching the rules.', 'danger');
+                    rulesList.innerHTML = '<div class="alert alert-danger">Failed to fetch rules. Please try again.</div>';
+                });
+        });
+
+        document.getElementById('rulesList').addEventListener('click', function(e) {
+            if (e.target.classList.contains('edit-button') || e.target.closest('.edit-button')) {
+                const button = e.target.classList.contains('edit-button') ? e.target : e.target.closest('.edit-button');
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const rule = button.getAttribute('data-rule');
+
+                document.getElementById('editRuleId').value = id;
+                document.getElementById('editRuleName').value = name;
+                document.getElementById('editRuleString').value = rule;
+
+                const editRuleModal = new bootstrap.Modal(document.getElementById('editRuleModal'));
+                editRuleModal.show();
+            }
+        });
+
+        document.getElementById('saveEditedRule').addEventListener('click', function() {
+            const id = document.getElementById('editRuleId').value;
+            const name = document.getElementById('editRuleName').value;
+            const rule_string = document.getElementById('editRuleString').value;
+
+            if (!validateParentheses(rule_string)) {
+                document.getElementById('editRuleStringFeedback').textContent = 'Unbalanced parentheses in the rule string.';
+                document.getElementById('editRuleString').classList.add('is-invalid');
+                return;
+            }
+
+            document.getElementById('editRuleString').classList.remove('is-invalid');
+
+            fetch(`http://localhost:5000/edit_rule/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, rule_string }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                showNotification(`Rule updated successfully! ID: ${data.id}`);
+                const editRuleModal = bootstrap.Modal.getInstance(document.getElementById('editRuleModal'));
+                editRuleModal.hide();
+                fetchRules();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while updating the rule.', 'danger');
+            });
+        });
+
+        // Add shake effect to buttons on click
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.add('shake');
+                setTimeout(() => {
+                    this.classList.remove('shake');
+                }, 820);
+            });
+        });
+
+        // Fetch rules on page load
+        fetchRules();
+    </script>
+</body>
+</html>
