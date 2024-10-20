@@ -58,14 +58,7 @@ rule-engine-ast/
    pip install -r requirements.txt
    ```
 
-4. Set up the database:
-   ```
-   flask db init
-   flask db migrate
-   flask db upgrade
-   ```
-
-5. Run the Flask application:
+4. Run the Flask application:
    ```
    flask run
    ```
