@@ -121,8 +121,7 @@ Key configuration options:
 2. CORS (Cross-Origin Resource Sharing): Configured to restrict access from unauthorized domains.
 3. SQL Injection Prevention: Using SQLAlchemy ORM to prevent SQL injection attacks.
 4. Secret Key: A strong secret key is used for session management.
-5. HTTPS: It's recommended to deploy the application behind an HTTPS proxy in production.
-6. Rate Limiting: Implement rate limiting on API endpoints to prevent abuse.
+
 
 ## Testing
 
