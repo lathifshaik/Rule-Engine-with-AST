@@ -26,9 +26,6 @@ rule-engine-ast/
 ├── rules.py               # Core logic for creating, combining, and evaluating rules
 ├── test_rules.py          # Unit tests for the rule engine functionality
 ├── requirements.txt       # Python dependencies
-├── static/                # Static files (CSS, JS, images)
-│   ├── css/
-│   └── js/
 ├── templates/             # HTML templates
 │   └── index.html
 └── README.md              # This file
@@ -46,7 +43,7 @@ rule-engine-ast/
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/rule-engine-ast.git
+   git clone https://github.com/lathifshaik/Rule-Engine-with-AST.git
    cd rule-engine-ast
    ```
 
@@ -121,8 +118,6 @@ Key configuration options:
 2. CORS (Cross-Origin Resource Sharing): Configured to restrict access from unauthorized domains.
 3. SQL Injection Prevention: Using SQLAlchemy ORM to prevent SQL injection attacks.
 4. Secret Key: A strong secret key is used for session management.
-5. HTTPS: It's recommended to deploy the application behind an HTTPS proxy in production.
-6. Rate Limiting: Implement rate limiting on API endpoints to prevent abuse.
 
 ## Testing
 
