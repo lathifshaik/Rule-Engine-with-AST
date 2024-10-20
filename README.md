@@ -44,7 +44,7 @@ rule-engine-ast/
 1. Clone the repository:
    ```
    git clone https://github.com/lathifshaik/Rule-Engine-with-AST.git
-   cd rule-engine-ast
+   cd Rule-Engine-with-AST
    ```
 
 2. Create and activate a virtual environment:
