@@ -3,7 +3,7 @@
 ## Introduction
 
 This project implements a sophisticated 3-tier rule engine application using Flask, SQLAlchemy, and Abstract Syntax Tree (AST) to determine user eligibility based on various attributes such as age, department, income, and spending. The system allows for dynamic creation, combination, and modification of conditional rules.
-
+![App look](static/1.png)
 ## Features
 
 - Create individual rules using a string representation
