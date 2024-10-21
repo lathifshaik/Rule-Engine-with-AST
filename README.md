@@ -1,139 +1,153 @@
 # Rule Engine with Abstract Syntax Tree (AST)
 
-## Overview
+## Introduction
 
-We are proud to present our successful implementation of a sophisticated 3-tier rule engine application. This project showcases a powerful system for determining user eligibility based on various attributes such as age, department, income, and spending patterns. By leveraging Abstract Syntax Trees (AST), we've created a flexible and dynamic platform for rule creation, combination, and modification.
+This project implements a sophisticated 3-tier rule engine application utilizing Flask, SQLAlchemy, and Abstract Syntax Tree (AST) to determine user eligibility based on various attributes like age, department, income, and spending. The system allows for dynamic creation, combination, and evaluation of conditional rules, providing an intuitive and efficient solution for complex decision-making scenarios.
 
-## Key Achievements
+## Key Features
 
-- **Robust 3-Tier Architecture**: Implemented a complete system with a user-friendly UI, efficient API, and a solid backend.
-- **Advanced AST Implementation**: Developed a complex data structure to represent and manipulate rules dynamically.
-- **Efficient Data Storage**: Designed an optimized database schema for storing rules and application metadata.
-- **Comprehensive API**: Created a full suite of API endpoints for rule management and evaluation.
-- **Dynamic Rule Handling**: Successfully implemented creation, combination, and evaluation of complex rules.
-- **Extensive Testing**: Developed a comprehensive test suite to ensure reliability and accuracy.
+- **Rule Creation**: Define individual rules using simple expressions.
+- **Rule Combination**: Seamlessly combine multiple rules using logical operators (AND, OR).
+- **Rule Evaluation**: Evaluate rules against user-defined data to check for eligibility.
+- **Persistent Storage**: Store rules and their combinations in an SQLite database for future retrieval.
+- **RESTful API**: Manage and evaluate rules through a REST API.
+- **Web Interface**: User-friendly web interface for rule creation, combination, and evaluation.
+- **Comprehensive Unit Testing**: Ensure system reliability and accuracy with a robust test suite.
+- **Security Measures**: Strong input validation and secure API communication using CORS and SQLAlchemy to mitigate injection risks.
 
-## Features
-
-- Create individual rules with a user-friendly syntax
-- Combine multiple rules using logical operators (AND, OR)
-- Evaluate rules against JSON data
-- RESTful API for rule management and evaluation
-- Web interface for easy interaction with the rule engine
-- Support for complex nested rules
-- Efficient rule combination strategies
-
-## Technical Details
-
-### Data Structure
-
-We implemented a sophisticated Node-based structure for our AST:
-
-```python
-class Node:
-    def __init__(self, node_type, value=None, left=None, right=None):
-        self.node_type = node_type  # "operator" or "operand"
-        self.value = value
-        self.left = left
-        self.right = right
-```
-
-This structure allows for dynamic rule changes and complex rule representations.
-
-### Data Storage
-
-We chose SQLite for its efficiency and ease of integration. Our schema supports storing complex rule structures and all necessary metadata.
-
-### Sample Rules
-
-Our system successfully handles complex rules such as:
+## Project Structure
 
 ```
-((age > 30 AND department = 'Sales') OR (age < 25 AND department = 'Marketing')) AND (salary > 50000 OR experience > 5)
+rule-engine-ast/
+│
+├── api_server/            # Contains the backend API logic
+│   ├── app.py             # Main Flask application setup
+│   ├── config.py          # Flask configuration file
+│   ├── models.py          # Database models using SQLAlchemy
+│   ├── rules.py           # Core logic for creating, combining, and evaluating rules
+│   └── templates/         # HTML templates for the web interface
+│       └── index.html     # Web UI for interacting with the rule engine
+│
+├── tests/                 # Unit tests for the API and rule engine
+│   └── test_rules.py
+│
+├── requirements.txt       # Python dependencies
+└── README.md              # Project documentation
 ```
-
-### API Design
-
-We've implemented all required API endpoints with additional features:
-
-1. `create_rule(rule_string)`: Creates an AST from a rule string.
-2. `combine_rules(rules)`: Efficiently combines multiple rules into a single AST.
-3. `evaluate_rule(data)`: Evaluates a rule against provided JSON data.
 
 ## Technologies Used
 
-- **Backend:** Python 3.x, Flask, SQLAlchemy
-- **Frontend:** HTML5, CSS (Tailwind CSS), JavaScript
-- **Database:** SQLite
-- **Testing:** unittest
+- **Backend**: Python 3.x, Flask, SQLAlchemy
+- **Frontend**: HTML5, Tailwind CSS, JavaScript
+- **Database**: SQLite
+- **Testing**: unittest
+- **Version Control**: Git
 
-## Setup and Installation
+## Installation and Setup
+
+### Prerequisites
+
+Ensure you have Python 3.x installed and accessible from your system path.
+
+### Installation Steps
 
 1. Clone the repository:
-   ```
+   ```bash
    git clone https://github.com/lathifshaik/Rule-Engine-with-AST.git
    cd Rule-Engine-with-AST
    ```
 
 2. Create and activate a virtual environment:
-   ```
+   ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
    ```
 
-3. Install required packages:
-   ```
+3. Install the required packages:
+   ```bash
    pip install -r requirements.txt
    ```
 
-4. Run the application:
+4. Run the Flask application:
+   ```bash
+   flask run
    ```
-   python app.py
-   ```
 
-The application will be running on `http://localhost:5000`.
+The app will be running at http://localhost:5000.
 
-## Usage
+## Configuration
 
-### API Endpoints
+The `config.py` file contains settings for the Flask application, such as the database connection string, secret keys, and debug mode options.
 
-- `POST /create_rule`: Create a new rule
-- `POST /evaluate_rule/<rule_id>`: Evaluate a rule against provided data
-- `POST /combine_rules`: Combine multiple rules
-- `GET /rules`: Get all existing rules
-- `PUT /edit_rule/<rule_id>`: Edit an existing rule
+Key settings:
+- `SQLALCHEMY_DATABASE_URI`: Path to the SQLite database.
+- `SECRET_KEY`: Secret key for session management.
+- `DEBUG`: Enable or disable Flask's debug mode.
 
-### Web Interface
+## Rule Syntax and AST Implementation
 
-Our intuitive web interface at `http://localhost:5000` allows users to:
+We use a custom Node-based AST (Abstract Syntax Tree) structure to represent and process rules. Each rule is parsed into an AST, allowing for dynamic manipulation and evaluation.
 
-- Create and edit complex rules
-- Evaluate rules against JSON data
-- Combine multiple rules
-- View and manage all existing rules
+### Supported Operations
 
-## Web Interface Screenshot
+- **Comparison Operators**: >, <, >=, <=, ==, !=
+- **Logical Operators**: AND, OR
+- **Nested Rules**: Complex rules using parentheses for grouping logic.
 
-![Rule Engine Web Interface](static/1.png)
+Example Rule:
+```
+(age > 30 AND department == 'Sales') OR (age < 25 AND department == 'Marketing')
+```
 
-*Our sleek and user-friendly interface for rule management*
+## API Endpoints
+
+- **Create Rule** (POST /create_rule):
+  - Creates a rule and stores it in the database.
+  - Request Body: `{"name": "Rule Name", "rule_string": "age > 25 AND department == 'Sales'"}`
+
+- **Evaluate Rule** (POST /evaluate_rule/<rule_id>):
+  - Evaluates a rule against provided user data.
+  - Request Body: `{"age": 30, "department": "Sales", "salary": 55000}`
+
+- **Combine Rules** (POST /combine_rules):
+  - Combines multiple rules into one using a logical operator.
+  - Request Body: `{"rule_ids": [1, 2], "operator": "AND"}`
+
+- **List All Rules** (GET /rules):
+  - Retrieves a list of all rules stored in the system.
+
+- **Edit Rule** (PUT /edit_rule/<rule_id>):
+  - Updates an existing rule.
+  - Request Body: `{"rule_string": "age >= 18 AND department == 'Marketing'"}`
+
+## Web Interface
+
+The application provides an intuitive web interface for users to interact with the rule engine. Users can create, combine, and evaluate rules via the interface at http://localhost:5000.
+![App look](static/1.png)
 
 ## Running Tests
 
-Execute our comprehensive test suite:
+To run the test suite, which covers rule creation, combination, and evaluation:
 
-```
+```bash
 python -m unittest discover tests
 ```
 
-## Rule Syntax
+Our tests ensure the rule engine behaves as expected, including edge cases and input validation.
 
-Our system supports a wide range of operations:
+## Security and Best Practices
 
-- Comparison: `>`, `<`, `>=`, `<=`, `==`, `!=`
-- Logical: `AND`, `OR`
-- Nested parentheses for complex logic
+- **Input Validation**: User inputs are validated to prevent injection attacks.
+- **CORS**: Configured to restrict access from unauthorized domains.
+- **SQL Injection Prevention**: SQLAlchemy ORM prevents SQL injection attacks.
+- **Secret Key**: A strong secret key ensures secure session management.
 
-Example: `(age > 18 AND status == "active") OR (score >= 75 AND category == "A")`
+## Troubleshooting
 
+- **Database errors**: Ensure your SQLite file has the correct permissions and path.
+- **Module not found errors**: Verify that all dependencies are installed correctly.
+- **API call failures**: Check server logs for detailed error messages.
 
+## Conclusion
+
+This project implements a versatile and powerful rule engine capable of handling complex decision-making logic with ease. The flexible AST-based structure and seamless integration between the frontend, backend, and database make it ideal for real-world applications requiring dynamic rule creation, modification, and evaluation.
