@@ -114,7 +114,7 @@ Our intuitive web interface at `http://localhost:5000` allows users to:
 
 ## Web Interface Screenshot
 
-![Rule Engine Web Interface](rule_engine_interface.png)
+![Rule Engine Web Interface](static/1.png)
 
 *Our sleek and user-friendly interface for rule management*
 
