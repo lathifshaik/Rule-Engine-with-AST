@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rule Engine</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
+            font-family: 'Inter', sans-serif;
             background-color: #1a1a1a;
             color: #ffffff;
-            font-family: 'Arial', sans-serif;
         }
         .container {
             max-width: 1200px;
@@ -86,24 +87,6 @@
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 2rem;
-        }
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ffffff;
-            border-bottom: 2px solid #4a4a4a;
-            padding-bottom: 0.5rem;
-        }
         .scrollable-rules {
             max-height: 300px;
             overflow-y: auto;
@@ -116,183 +99,158 @@
             background-color: #2a2a2a;
             border-radius: 10px;
         }
-        .edit-button {
-            margin-left: 10px;
-            padding: 2px 5px;
-            font-size: 0.8em;
-        }
-        .modal-content {
-            background-color: #2a2a2a;
-            color: #ffffff;
-        }
-        .modal-header {
-            border-bottom: 1px solid #3a3a3a;
-        }
-        .modal-footer {
-            border-top: 1px solid #3a3a3a;
-        }
-        .btn-close {
-            color: #ffffff;
-        }
     </style>
 </head>
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-5 fade-in">Rule Engine</h1>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 fade-in">Rule Engine</h1>
         
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="section-title">Create and Evaluate Rules</h2>
-            </div>
-            <div class="col-md-6">
-                <div class="card fade-in">
-                    <div class="card-header">
-                        <i class="fas fa-plus-circle me-2"></i>Create Rule
-                    </div>
-                    <div class="card-body">
-                        <form id="createRuleForm">
-                            <div class="mb-3">
-                                <label for="ruleName" class="form-label">Rule Name</label>
-                                <input type="text" class="form-control" id="ruleName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="ruleString" class="form-label">Rule String</label>
-                                <input type="text" class="form-control" id="ruleString" required>
-                                <div id="ruleStringFeedback" class="invalid-feedback"></div>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-save me-2"></i>Create Rule
-                            </button>
-                        </form>
-                    </div>
-                    <div class="instructions">
-                        Instructions: Enter a name for your rule and the rule string. The rule string should be a valid logical expression using operators like AND, OR and parentheses.
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="card fade-in">
+                <div class="card-header p-4">
+                    <i class="fas fa-plus-circle mr-2"></i>Create Rule
+                </div>
+                <div class="p-6">
+                    <form id="createRuleForm">
+                        <div class="mb-4">
+                            <label for="ruleName" class="block mb-2">Rule Name</label>
+                            <input type="text" class="form-control w-full" id="ruleName" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="ruleString" class="block mb-2">Rule String</label>
+                            <input type="text" class="form-control w-full" id="ruleString" required>
+                            <div id="ruleStringFeedback" class="text-red-500 mt-1 hidden"></div>
+                        </div>
+                        <button type="submit" class="btn-primary w-full py-2 px-4 rounded">
+                            <i class="fas fa-save mr-2"></i>Create Rule
+                        </button>
+                    </form>
+                </div>
+                <div class="instructions">
+                    Instructions: Enter a name for your rule and the rule string. The rule string should be a valid logical expression using operators like AND, OR and parentheses. Note: The rule engine is case-sensitive.
                 </div>
             </div>
             
-            <div class="col-md-6">
-                <div class="card fade-in">
-                    <div class="card-header">
-                        <i class="fas fa-check-circle me-2"></i>Evaluate Rule
-                    </div>
-                    <div class="card-body">
-                        <form id="evaluateRuleForm">
-                            <div class="mb-3">
-                                <label for="ruleSelect" class="form-label">Select Rule</label>
-                                <select class="form-select" id="ruleSelect" required>
-                                    <option value="">Select a rule...</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="jsonData" class="form-label">JSON Data</label>
-                                <textarea class="form-control" id="jsonData" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-play me-2"></i>Evaluate Rule
-                            </button>
-                        </form>
-                        <div id="evaluationResult" class="mt-3 alert alert-info d-none fade-in" role="alert"></div>
-                        <div id="missingFieldsError" class="mt-3 alert alert-danger d-none fade-in" role="alert"></div>
-                    </div>
-                    <div class="instructions">
-                        Instructions: Select a rule to evaluate and enter the JSON data to test against the rule. Ensure your JSON is properly formatted and includes all required fields.
-                    </div>
+            <div class="card fade-in">
+                <div class="card-header p-4">
+                    <i class="fas fa-check-circle mr-2"></i>Evaluate Rule
+                </div>
+                <div class="p-6">
+                    <form id="evaluateRuleForm">
+                        <div class="mb-4">
+                            <label for="ruleSelect" class="block mb-2">Select Rule</label>
+                            <select class="form-select w-full" id="ruleSelect" required>
+                                <option value="">Select a rule...</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="jsonData" class="block mb-2">JSON Data</label>
+                            <textarea class="form-control w-full" id="jsonData" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary w-full py-2 px-4 rounded">
+                            <i class="fas fa-play mr-2"></i>Evaluate Rule
+                        </button>
+                    </form>
+                    <div id="evaluationResult" class="mt-4 p-3 bg-blue-900 text-white rounded hidden"></div>
+                    <div id="missingFieldsError" class="mt-4 p-3 bg-red-900 text-white rounded hidden"></div>
+                </div>
+                <div class="instructions">
+                    Instructions: Select a rule to evaluate and enter the JSON data to test against the rule. Ensure your JSON is properly formatted and includes all required fields. The evaluation is case-sensitive.
                 </div>
             </div>
         </div>
         
-        <div class="row">
-            <div class="col-12">
-                <h2 class="section-title">Manage Rules</h2>
-            </div>
-            <div class="col-md-6">
-                <div class="card fade-in">
-                    <div class="card-header">
-                        <i class="fas fa-object-group me-2"></i>Combine Rules
-                    </div>
-                    <div class="card-body">
-                        <form id="combineRulesForm">
-                            <div class="mb-3">
-                                <label for="ruleIds" class="form-label">Rule IDs (comma-separated)</label>
-                                <input type="text" class="form-control" id="ruleIds" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="operator" class="form-label">Operator</label>
-                                <select class="form-select" id="operator" required>
-                                    <option value="AND">AND</option>
-                                    <option value="OR">OR</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-link me-2"></i>Combine Rules
-                            </button>
-                        </form>
-                        <div id="combinationResult" class="mt-3 alert alert-warning d-none fade-in" role="alert"></div>
-                    </div>
-                    <div class="instructions">
-                        Instructions: Enter the IDs of the rules you want to combine, separated by commas. Choose the operator (AND/OR) to combine the rules.
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card fade-in">
+                <div class="card-header p-4">
+                    <i class="fas fa-object-group mr-2"></i>Combine Rules
+                </div>
+                <div class="p-6">
+                    <form id="combineRulesForm">
+                        <div class="mb-4">
+                            <label for="ruleIds" class="block mb-2">Rule IDs (comma-separated)</label>
+                            <input type="text" class="form-control w-full" id="ruleIds" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="operator" class="block mb-2">Operator</label>
+                            <select class="form-select w-full" id="operator" required>
+                                <option value="AND">AND</option>
+                                <option value="OR">OR</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary w-full py-2 px-4 rounded">
+                            <i class="fas fa-link mr-2"></i>Combine Rules
+                        </button>
+                    </form>
+                    <div id="combinationResult" class="mt-4 p-3 bg-yellow-900 text-white rounded hidden"></div>
+                </div>
+                <div class="instructions">
+                    Instructions: Enter the IDs of the rules you want to combine, separated by commas. Choose the operator (AND/OR) to combine the rules. The combination is case-sensitive.
                 </div>
             </div>
             
-            <div class="col-md-6">
-                <div class="card fade-in">
-                    <div class="card-header">
-                        <i class="fas fa-list me-2"></i>All Rules
+            <div class="card fade-in">
+                <div class="card-header p-4">
+                    <i class="fas fa-list mr-2"></i>All Rules
+                </div>
+                <div class="p-6">
+                    <button id="fetchRulesBtn" class="btn-primary w-full py-2 px-4 rounded mb-4">
+                        <i class="fas fa-sync-alt mr-2"></i>Fetch Rules
+                    </button>
+                    <div class="scrollable-rules">
+                        <ul id="rulesList" class="list-group"></ul>
                     </div>
-                    <div class="card-body">
-                        <button id="fetchRulesBtn" class="btn btn-primary w-100 mb-3">
-                            <i class="fas fa-sync-alt me-2"></i>Fetch Rules
-                        </button>
-                        <div class="scrollable-rules">
-                            <ul id="rulesList" class="list-group"></ul>
-                        </div>
-                    </div>
-                    <div class="instructions">
-                        Instructions: Click the "Fetch Rules" button to retrieve and display all existing rules. Click the "Edit" button to modify a rule.
-                    </div>
+                </div>
+                <div class="instructions">
+                    Instructions: Click the "Fetch Rules" button to retrieve and display all existing rules. Click the "Edit" button to modify a rule. Rule names and strings are case-sensitive.
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Edit Rule Modal -->
-    <div class="modal fade" id="editRuleModal" tabindex="-1" aria-labelledby="editRuleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editRuleModalLabel">Edit Rule</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="fixed z-10 inset-0 overflow-y-auto hidden" id="editRuleModal" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">
+                        Edit Rule
+                    </h3>
+                    <div class="mt-2">
+                        <form id="editRuleForm">
+                            <input type="hidden" id="editRuleId">
+                            <div class="mb-4">
+                                <label for="editRuleName" class="block text-sm font-medium text-gray-400">Rule Name</label>
+                                <input type="text" name="editRuleName" id="editRuleName" class="mt-1 form-control w-full" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="editRuleString" class="block text-sm font-medium text-gray-400">Rule String</label>
+                                <input type="text" name="editRuleString" id="editRuleString" class="mt-1 form-control w-full" required>
+                                <div id="editRuleStringFeedback" class="mt-2 text-sm text-red-600 hidden"></div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="editRuleForm">
-                        <input type="hidden" id="editRuleId">
-                        <div class="mb-3">
-                            <label for="editRuleName" class="form-label">Rule Name</label>
-                            <input type="text" class="form-control" id="editRuleName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editRuleString" class="form-label">Rule String</label>
-                            <input type="text" class="form-control" id="editRuleString" required>
-                            <div id="editRuleStringFeedback" class="invalid-feedback"></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveEditedRule">Save changes</button>
+                <div class="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="saveEditedRule" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Save changes
+                    </button>
+                    <button type="button" id="closeEditModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const API_URL = 'http://localhost:5000';
+
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
-            notification.className = `alert alert-${type} fade-in position-fixed top-0 start-50 translate-middle-x mt-3 text-dark`;
-            notification.style.zIndex = '1000';
+            notification.className = `fixed top-4 right-4 p-4 rounded-md text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} fade-in`;
             notification.textContent = message;
             document.body.appendChild(notification);
             setTimeout(() => {
@@ -322,8 +280,8 @@
             }
         }
 
-        function fetchRules() {
-            return fetch('http://localhost:5000/rules')
+        function  fetchRules() {
+            return fetch(`${API_URL}/rules`)
                 .then(response => response.json())
                 .then(rules => {
                     const rulesList = document.getElementById('rulesList');
@@ -334,13 +292,16 @@
                         const li = document.createElement('li');
                         li.className = 'list-group-item fade-in';
                         li.innerHTML = `
-                            <strong>ID:</strong> ${rule.id}<br>
-                            <strong>Name:</strong> ${rule.name}<br>
-                            <strong>Rule:</strong> ${rule.rule_string}
-                            <button class="btn btn-sm btn-primary float-end edit-button" data-id="${rule.id}" data-name="${rule.name}" 
-                                data-rule="${rule.rule_string}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <strong>ID:</strong> ${rule.id}<br>
+                                    <strong>Name:</strong> ${rule.name}<br>
+                                    <strong>Rule:</strong> ${rule.rule_string}
+                                </div>
+                                <button class="edit-button px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" data-id="${rule.id}" data-name="${rule.name}" data-rule="${rule.rule_string}">
+                                    Edit
+                                </button>
+                            </div>
                         `;
                         rulesList.appendChild(li);
 
@@ -361,13 +322,13 @@
 
             if (!validateParentheses(rule_string)) {
                 ruleStringFeedback.textContent = 'Unbalanced parentheses in the rule string.';
-                document.getElementById('ruleString').classList.add('is-invalid');
+                ruleStringFeedback.classList.remove('hidden');
                 return;
             }
 
-            document.getElementById('ruleString').classList.remove('is-invalid');
+            ruleStringFeedback.classList.add('hidden');
             
-            fetch('http://localhost:5000/create_rule', {
+            fetch(`${API_URL}/create_rule`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -382,7 +343,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('An error occurred while creating the rule.', 'danger');
+                showNotification('An error occurred while creating the rule.', 'error');
             });
         });
 
@@ -393,15 +354,15 @@
             const resultElement = document.getElementById('evaluationResult');
             const missingFieldsError = document.getElementById('missingFieldsError');
             
-            resultElement.classList.add('d-none');
-            missingFieldsError.classList.add('d-none');
+            resultElement.classList.add('hidden');
+            missingFieldsError.classList.add('hidden');
 
             if (!validateJSON(jsonData)) {
-                showNotification('Invalid JSON format. Please check your input.', 'danger');
+                showNotification('Invalid JSON format. Please check your input.', 'error');
                 return;
             }
 
-            fetch(`http://localhost:5000/evaluate_rule/${ruleId}`, {
+            fetch(`${API_URL}/evaluate_rule/${ruleId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -412,15 +373,15 @@
             .then(data => {
                 if (data.error && data.error.includes('Missing required fields')) {
                     missingFieldsError.textContent = data.error;
-                    missingFieldsError.classList.remove('d-none');
+                    missingFieldsError.classList.remove('hidden');
                 } else {
                     resultElement.textContent = `Result: ${data.result}`;
-                    resultElement.classList.remove('d-none');
+                    resultElement.classList.remove('hidden');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('An error occurred while evaluating the rule.', 'danger');
+                showNotification('An error occurred while evaluating the rule.', 'error');
             });
         });
 
@@ -429,7 +390,7 @@
             const ruleIds = document.getElementById('ruleIds').value.split(',').map(id => parseInt(id.trim()));
             const operator = document.getElementById('operator').value;
             
-            fetch('http://localhost:5000/combine_rules', {
+            fetch(`${API_URL}/combine_rules`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -440,24 +401,24 @@
             .then(data => {
                 const resultElement = document.getElementById('combinationResult');
                 resultElement.textContent = `Combined Rule ID: ${data.id}`;
-                resultElement.classList.remove('d-none');
+                resultElement.classList.remove('hidden');
                 fetchRules();
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('An error occurred while combining the rules.', 'danger');
+                showNotification('An error occurred while combining the rules.', 'error');
             });
         });
 
         document.getElementById('fetchRulesBtn').addEventListener('click', function() {
             const rulesList = document.getElementById('rulesList');
-            rulesList.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            rulesList.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
             fetchRules()
                 .catch(error => {
                     console.error('Error:', error);
-                    showNotification('An error occurred while fetching the rules.', 'danger');
-                    rulesList.innerHTML = '<div class="alert alert-danger">Failed to fetch rules. Please try again.</div>';
+                    showNotification('An error occurred while fetching the rules.', 'error');
+                    rulesList.innerHTML = '<div class="text-red-500">Failed to fetch rules. Please try again.</div>';
                 });
         });
 
@@ -472,8 +433,7 @@
                 document.getElementById('editRuleName').value = name;
                 document.getElementById('editRuleString').value = rule;
 
-                const editRuleModal = new bootstrap.Modal(document.getElementById('editRuleModal'));
-                editRuleModal.show();
+                document.getElementById('editRuleModal').classList.remove('hidden');
             }
         });
 
@@ -481,16 +441,17 @@
             const id = document.getElementById('editRuleId').value;
             const name = document.getElementById('editRuleName').value;
             const rule_string = document.getElementById('editRuleString').value;
+            const editRuleStringFeedback = document.getElementById('editRuleStringFeedback');
 
             if (!validateParentheses(rule_string)) {
-                document.getElementById('editRuleStringFeedback').textContent = 'Unbalanced parentheses in the rule string.';
-                document.getElementById('editRuleString').classList.add('is-invalid');
+                editRuleStringFeedback.textContent = 'Unbalanced parentheses in the rule string.';
+                editRuleStringFeedback.classList.remove('hidden');
                 return;
             }
 
-            document.getElementById('editRuleString').classList.remove('is-invalid');
+            editRuleStringFeedback.classList.add('hidden');
 
-            fetch(`http://localhost:5000/edit_rule/${id}`, {
+            fetch(`${API_URL}/edit_rule/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -500,18 +461,21 @@
             .then(response => response.json())
             .then(data => {
                 showNotification(`Rule updated successfully! ID: ${data.id}`);
-                const editRuleModal = bootstrap.Modal.getInstance(document.getElementById('editRuleModal'));
-                editRuleModal.hide();
+                document.getElementById('editRuleModal').classList.add('hidden');
                 fetchRules();
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('An error occurred while updating the rule.', 'danger');
+                showNotification('An error occurred while updating the rule.', 'error');
             });
         });
 
+        document.getElementById('closeEditModal').addEventListener('click', function() {
+            document.getElementById('editRuleModal').classList.add('hidden');
+        });
+
         // Add shake effect to buttons on click
-        document.querySelectorAll('.btn').forEach(button => {
+        document.querySelectorAll('.btn-primary').forEach(button => {
             button.addEventListener('click', function() {
                 this.classList.add('shake');
                 setTimeout(() => {

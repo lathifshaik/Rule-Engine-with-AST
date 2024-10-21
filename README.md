@@ -1,45 +1,73 @@
-# Rule Engine with AST
+# Rule Engine with Abstract Syntax Tree (AST)
 
-## Introduction
+## Overview
 
-This project implements a sophisticated 3-tier rule engine application using Flask, SQLAlchemy, and Abstract Syntax Tree (AST) to determine user eligibility based on various attributes such as age, department, income, and spending. The system allows for dynamic creation, combination, and modification of conditional rules.
-![App look](static/1.png)
+We are proud to present our successful implementation of a sophisticated 3-tier rule engine application. This project showcases a powerful system for determining user eligibility based on various attributes such as age, department, income, and spending patterns. By leveraging Abstract Syntax Trees (AST), we've created a flexible and dynamic platform for rule creation, combination, and modification.
+
+## Key Achievements
+
+- **Robust 3-Tier Architecture**: Implemented a complete system with a user-friendly UI, efficient API, and a solid backend.
+- **Advanced AST Implementation**: Developed a complex data structure to represent and manipulate rules dynamically.
+- **Efficient Data Storage**: Designed an optimized database schema for storing rules and application metadata.
+- **Comprehensive API**: Created a full suite of API endpoints for rule management and evaluation.
+- **Dynamic Rule Handling**: Successfully implemented creation, combination, and evaluation of complex rules.
+- **Extensive Testing**: Developed a comprehensive test suite to ensure reliability and accuracy.
+
 ## Features
 
-- Create individual rules using a string representation
-- Combine multiple rules into a single rule using AND/OR operators
-- Evaluate rules against user data
-- Store rules in a SQLite database
+- Create individual rules with a user-friendly syntax
+- Combine multiple rules using logical operators (AND, OR)
+- Evaluate rules against JSON data
 - RESTful API for rule management and evaluation
-- Frontend interface using HTML, Bootstrap CSS, and JavaScript
-- Comprehensive error handling and input validation
-- Unit testing suite
+- Web interface for easy interaction with the rule engine
+- Support for complex nested rules
+- Efficient rule combination strategies
 
-## Project Structure
+## Technical Details
+
+### Data Structure
+
+We implemented a sophisticated Node-based structure for our AST:
+
+```python
+class Node:
+    def __init__(self, node_type, value=None, left=None, right=None):
+        self.node_type = node_type  # "operator" or "operand"
+        self.value = value
+        self.left = left
+        self.right = right
+```
+
+This structure allows for dynamic rule changes and complex rule representations.
+
+### Data Storage
+
+We chose SQLite for its efficiency and ease of integration. Our schema supports storing complex rule structures and all necessary metadata.
+
+### Sample Rules
+
+Our system successfully handles complex rules such as:
 
 ```
-rule-engine-ast/
-│
-├── app.py                 # Main Flask application setup
-├── config.py              # Configuration file for the Flask app
-├── models.py              # Database models using SQLAlchemy
-├── rules.py               # Core logic for creating, combining, and evaluating rules
-├── test_rules.py          # Unit tests for the rule engine functionality
-├── requirements.txt       # Python dependencies
-├── templates/             # HTML templates
-│   └── index.html
-└── README.md              # This file
+((age > 30 AND department = 'Sales') OR (age < 25 AND department = 'Marketing')) AND (salary > 50000 OR experience > 5)
 ```
+
+### API Design
+
+We've implemented all required API endpoints with additional features:
+
+1. `create_rule(rule_string)`: Creates an AST from a rule string.
+2. `combine_rules(rules)`: Efficiently combines multiple rules into a single AST.
+3. `evaluate_rule(data)`: Evaluates a rule against provided JSON data.
 
 ## Technologies Used
 
-- Backend: Python 3.8+, Flask 2.0+
-- Database: SQLite, SQLAlchemy
-- Frontend: HTML5, Bootstrap 5, JavaScript (ES6+)
-- Testing: unittest
-- Version Control: Git
+- **Backend:** Python 3.x, Flask, SQLAlchemy
+- **Frontend:** HTML5, CSS (Tailwind CSS), JavaScript
+- **Database:** SQLite
+- **Testing:** unittest
 
-## Installation and Setup
+## Setup and Installation
 
 1. Clone the repository:
    ```
@@ -53,93 +81,59 @@ rule-engine-ast/
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
    ```
 
-3. Install the required packages:
+3. Install required packages:
    ```
    pip install -r requirements.txt
    ```
 
-4. Run the Flask application:
+4. Run the application:
    ```
-   flask run
+   python app.py
    ```
 
-## Configuration
+The application will be running on `http://localhost:5000`.
 
-The application uses a configuration file (`config.py`) to manage different settings. You can modify this file to change database settings, secret keys, and other configuration options.
+## Usage
 
-Key configuration options:
-- `SQLALCHEMY_DATABASE_URI`: Database connection string
-- `SECRET_KEY`: Secret key for session management
-- `DEBUG`: Enable/disable debug mode
-
-## API Endpoints
+### API Endpoints
 
 - `POST /create_rule`: Create a new rule
-  - Request body: `{"name": "Rule Name", "rule_string": "age > 18 AND department == 'Sales'"}`
-
 - `POST /evaluate_rule/<rule_id>`: Evaluate a rule against provided data
-  - Request body: `{"age": 25, "department": "Sales", "salary": 50000}`
-
-- `POST /combine_rules`: Combine multiple rules into a single rule
-  - Request body: `{"rule_ids": [1, 2, 3], "operator": "AND"}`
-
-- `GET /rules`: Get all rules
-
+- `POST /combine_rules`: Combine multiple rules
+- `GET /rules`: Get all existing rules
 - `PUT /edit_rule/<rule_id>`: Edit an existing rule
-  - Request body: `{"rule_string": "age >= 21 AND department == 'Marketing'"}`
 
-## Usage Examples
+### Web Interface
 
-1. Creating a rule:
-   ```
-   curl -X POST http://localhost:5000/create_rule -H "Content-Type: application/json" -d '{"name": "Adult in Sales", "rule_string": "age >= 18 AND department == \"Sales\""}'
-   ```
+Our intuitive web interface at `http://localhost:5000` allows users to:
 
-2. Evaluating a rule:
-   ```
-   curl -X POST http://localhost:5000/evaluate_rule/1 -H "Content-Type: application/json" -d '{"age": 25, "department": "Sales"}'
-   ```
+- Create and edit complex rules
+- Evaluate rules against JSON data
+- Combine multiple rules
+- View and manage all existing rules
 
-3. Combining rules:
-   ```
-   curl -X POST http://localhost:5000/combine_rules -H "Content-Type: application/json" -d '{"rule_ids": [1, 2], "operator": "OR"}'
-   ```
+## Web Interface Screenshot
 
-## Security Measures
+![Rule Engine Web Interface](rule_engine_interface.png)
 
-1. Input Validation: All user inputs are validated to prevent injection attacks.
-2. CORS (Cross-Origin Resource Sharing): Configured to restrict access from unauthorized domains.
-3. SQL Injection Prevention: Using SQLAlchemy ORM to prevent SQL injection attacks.
-4. Secret Key: A strong secret key is used for session management.
+*Our sleek and user-friendly interface for rule management*
 
-## Testing
+## Running Tests
 
-To run the unit tests:
+Execute our comprehensive test suite:
 
 ```
-python -m unittest test_rules.py
+python -m unittest discover tests
 ```
 
-The test suite covers:
-- Creating individual rules
-- Combining rules
-- Evaluating rules against various data inputs
-- Edge cases and error handling
+## Rule Syntax
+
+Our system supports a wide range of operations:
+
+- Comparison: `>`, `<`, `>=`, `<=`, `==`, `!=`
+- Logical: `AND`, `OR`
+- Nested parentheses for complex logic
+
+Example: `(age > 18 AND status == "active") OR (score >= 75 AND category == "A")`
 
 
-## Libraries and Dependencies
-
-- Flask (2.0.1): Web framework for building the API
-- SQLAlchemy (1.4.23): ORM for database operations
-- Flask-SQLAlchemy (2.5.1): Flask extension for SQLAlchemy integration
-- Flask-Migrate (3.1.0): Database migration tool
-- Flask-CORS (3.0.10): Handling Cross-Origin Resource Sharing
-- pytest (6.2.5): Testing framework
-
-For a complete list of dependencies, refer to `requirements.txt`.
-
-## Troubleshooting
-
-- If you encounter database errors, ensure your SQLite file has the correct permissions.
-- For "Module not found" errors, verify that all dependencies are installed and your virtual environment is activated.
-- If API calls fail, check the server logs for detailed error messages.
