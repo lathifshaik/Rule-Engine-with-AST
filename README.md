@@ -123,6 +123,10 @@ Example Rule:
 ## Web Interface
 
 The application provides an intuitive web interface for users to interact with the rule engine. Users can create, combine, and evaluate rules via the interface at http://localhost:5000.
+<<<<<<< HEAD
+=======
+![App look](static/1.png)
+>>>>>>> 8bc97782d26abb6704a1de886e87b955f0b382c5
 
 ## Running Tests
 

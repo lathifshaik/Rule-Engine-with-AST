@@ -7,69 +7,22 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-        }
-        .container {
-            max-width: 1200px;
         }
         .card {
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
             transition: all 0.3s ease;
         }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        .card-header {
-            border-radius: 15px 15px 0 0;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: #3a3a3a;
-            color: #ffffff;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
         }
         .btn-primary {
-            background: #4a4a4a;
-            border: none;
             transition: all 0.3s ease;
         }
         .btn-primary:hover {
-            background: #5a5a5a;
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(46, 89, 217, 0.2);
-        }
-        .form-control, .form-select {
-            background-color: #3a3a3a;
-            border-color: #4a4a4a;
-            color: #ffffff;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            background-color: #3a3a3a;
-            border-color: #5a5a5a;
-            color: #ffffff;
-            box-shadow: 0 0 0 0.2rem rgba(90, 90, 90, 0.25);
-        }
-        .list-group-item {
-            background: #2a2a2a;
-            color: #ffffff;
-            border-color: #3a3a3a;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-        .list-group-item:hover {
-            background: #3a3a3a;
-            transform: translateX(5px);
         }
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
@@ -87,122 +40,98 @@
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-        .scrollable-rules {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .instructions {
-            font-size: 0.9rem;
-            color: #aaaaaa;
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: #2a2a2a;
-            border-radius: 10px;
-        }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-white min-h-screen">
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8 fade-in">Rule Engine</h1>
+        <h1 class="text-4xl font-bold text-center mb-12 fade-in text-gray-800">Rule Engine</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="card fade-in">
-                <div class="card-header p-4">
-                    <i class="fas fa-plus-circle mr-2"></i>Create Rule
-                </div>
-                <div class="p-6">
-                    <form id="createRuleForm">
-                        <div class="mb-4">
-                            <label for="ruleName" class="block mb-2">Rule Name</label>
-                            <input type="text" class="form-control w-full" id="ruleName" required>
-                        </div>
-                        <div class="mb-4">
-                            <label for="ruleString" class="block mb-2">Rule String</label>
-                            <input type="text" class="form-control w-full" id="ruleString" required>
-                            <div id="ruleStringFeedback" class="text-red-500 mt-1 hidden"></div>
-                        </div>
-                        <button type="submit" class="btn-primary w-full py-2 px-4 rounded">
-                            <i class="fas fa-save mr-2"></i>Create Rule
-                        </button>
-                    </form>
-                </div>
-                <div class="instructions">
-                    Instructions: Enter a name for your rule and the rule string. The rule string should be a valid logical expression using operators like AND, OR and parentheses. Note: The rule engine is case-sensitive.
+            <div class="card fade-in p-6 bg-white border border-gray-200 rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-blue-600"><i class="fas fa-plus-circle mr-2"></i>Create Rule</h2>
+                <form id="createRuleForm">
+                    <div class="mb-4">
+                        <label for="ruleName" class="block mb-2 text-gray-700">Rule Name</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="ruleName" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="ruleString" class="block mb-2 text-gray-700">Rule String</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="ruleString" required>
+                        <div id="ruleStringFeedback" class="text-red-500 mt-1 hidden"></div>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <i class="fas fa-save mr-2"></i>Create Rule
+                    </button>
+                </form>
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg text-gray-700">
+                    <p class="font-semibold mb-2">Instructions:</p>
+                    <p>Enter a name for your rule and the rule string. The rule string should be a valid logical expression using operators like AND, OR and parentheses. Note: The rule engine is case-sensitive.</p>
                 </div>
             </div>
             
-            <div class="card fade-in">
-                <div class="card-header p-4">
-                    <i class="fas fa-check-circle mr-2"></i>Evaluate Rule
-                </div>
-                <div class="p-6">
-                    <form id="evaluateRuleForm">
-                        <div class="mb-4">
-                            <label for="ruleSelect" class="block mb-2">Select Rule</label>
-                            <select class="form-select w-full" id="ruleSelect" required>
-                                <option value="">Select a rule...</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="jsonData" class="block mb-2">JSON Data</label>
-                            <textarea class="form-control w-full" id="jsonData" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary w-full py-2 px-4 rounded">
-                            <i class="fas fa-play mr-2"></i>Evaluate Rule
-                        </button>
-                    </form>
-                    <div id="evaluationResult" class="mt-4 p-3 bg-blue-900 text-white rounded hidden"></div>
-                    <div id="missingFieldsError" class="mt-4 p-3 bg-red-900 text-white rounded hidden"></div>
-                </div>
-                <div class="instructions">
-                    Instructions: Select a rule to evaluate and enter the JSON data to test against the rule. Ensure your JSON is properly formatted and includes all required fields. The evaluation is case-sensitive.
+            <div class="card fade-in p-6 bg-white border border-gray-200 rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-green-600"><i class="fas fa-check-circle mr-2"></i>Evaluate Rule</h2>
+                <form id="evaluateRuleForm">
+                    <div class="mb-4">
+                        <label for="ruleSelect" class="block mb-2 text-gray-700">Select Rule</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" id="ruleSelect" required>
+                            <option value="">Select a rule...</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="jsonData" class="block mb-2 text-gray-700">JSON Data</label>
+                        <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" id="jsonData" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                        <i class="fas fa-play mr-2"></i>Evaluate Rule
+                    </button>
+                </form>
+                <div id="evaluationResult" class="mt-4 p-3 bg-blue-100 text-blue-800 rounded-md hidden"></div>
+                <div id="missingFieldsError" class="mt-4 p-3 bg-red-100 text-red-800 rounded-md hidden"></div>
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg text-gray-700">
+                    <p class="font-semibold mb-2">Instructions:</p>
+                    <p>Select a rule to evaluate and enter the JSON data to test against the rule. Ensure your JSON is properly formatted and includes all required fields. The evaluation is case-sensitive.</p>
                 </div>
             </div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="card fade-in">
-                <div class="card-header p-4">
-                    <i class="fas fa-object-group mr-2"></i>Combine Rules
-                </div>
-                <div class="p-6">
-                    <form id="combineRulesForm">
-                        <div class="mb-4">
-                            <label for="ruleIds" class="block mb-2">Rule IDs (comma-separated)</label>
-                            <input type="text" class="form-control w-full" id="ruleIds" required>
-                        </div>
-                        <div class="mb-4">
-                            <label for="operator" class="block mb-2">Operator</label>
-                            <select class="form-select w-full" id="operator" required>
-                                <option value="AND">AND</option>
-                                <option value="OR">OR</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-primary w-full py-2 px-4 rounded">
-                            <i class="fas fa-link mr-2"></i>Combine Rules
-                        </button>
-                    </form>
-                    <div id="combinationResult" class="mt-4 p-3 bg-yellow-900 text-white rounded hidden"></div>
-                </div>
-                <div class="instructions">
-                    Instructions: Enter the IDs of the rules you want to combine, separated by commas. Choose the operator (AND/OR) to combine the rules. The combination is case-sensitive.
+            <div class="card fade-in p-6 bg-white border border-gray-200 rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-600"><i class="fas fa-object-group mr-2"></i>Combine Rules</h2>
+                <form id="combineRulesForm">
+                    <div class="mb-4">
+                        <label for="ruleIds" class="block mb-2 text-gray-700">Rule IDs (comma-separated)</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="ruleIds" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="operator" class="block mb-2 text-gray-700">Operator</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="operator" required>
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-2 px-4 bg-purple-600 text-white font-semibold rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                        <i class="fas fa-link mr-2"></i>Combine Rules
+                    </button>
+                </form>
+                <div id="combinationResult" class="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md hidden"></div>
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg text-gray-700">
+                    <p class="font-semibold mb-2">Instructions:</p>
+                    <p>Enter the IDs of the rules you want to combine, separated by commas. Choose the operator (AND/OR) to combine the rules. The combination is case-sensitive.</p>
                 </div>
             </div>
             
-            <div class="card fade-in">
-                <div class="card-header p-4">
-                    <i class="fas fa-list mr-2"></i>All Rules
+            <div class="card fade-in p-6 bg-white border border-gray-200 rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700"><i class="fas fa-list mr-2"></i>All Rules</h2>
+                <button id="fetchRulesBtn" class="btn-primary w-full py-2 px-4 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 mb-4">
+                    <i class="fas fa-sync-alt mr-2"></i>Fetch Rules
+                </button>
+                <div class="max-h-64 overflow-y-auto">
+                    <ul id="rulesList" class="space-y-2"></ul>
                 </div>
-                <div class="p-6">
-                    <button id="fetchRulesBtn" class="btn-primary w-full py-2 px-4 rounded mb-4">
-                        <i class="fas fa-sync-alt mr-2"></i>Fetch Rules
-                    </button>
-                    <div class="scrollable-rules">
-                        <ul id="rulesList" class="list-group"></ul>
-                    </div>
-                </div>
-                <div class="instructions">
-                    Instructions: Click the "Fetch Rules" button to retrieve and display all existing rules. Click the "Edit" button to modify a rule. Rule names and strings are case-sensitive.
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg text-gray-700">
+                    <p class="font-semibold mb-2">Instructions:</p>
+                    <p>Click the "Fetch Rules" button to retrieve and display all existing rules. Click the "Edit" button to modify a rule. Rule names and strings are case-sensitive.</p>
                 </div>
             </div>
         </div>
@@ -213,31 +142,31 @@
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                         Edit Rule
                     </h3>
                     <div class="mt-2">
                         <form id="editRuleForm">
                             <input type="hidden" id="editRuleId">
                             <div class="mb-4">
-                                <label for="editRuleName" class="block text-sm font-medium text-gray-400">Rule Name</label>
-                                <input type="text" name="editRuleName" id="editRuleName" class="mt-1 form-control w-full" required>
+                                <label for="editRuleName" class="block text-sm font-medium text-gray-700">Rule Name</label>
+                                <input type="text" name="editRuleName" id="editRuleName" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                             </div>
                             <div class="mb-4">
-                                <label for="editRuleString" class="block text-sm font-medium text-gray-400">Rule String</label>
-                                <input type="text" name="editRuleString" id="editRuleString" class="mt-1 form-control w-full" required>
+                                <label for="editRuleString" class="block text-sm font-medium text-gray-700">Rule String</label>
+                                <input type="text" name="editRuleString" id="editRuleString" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                                 <div id="editRuleStringFeedback" class="mt-2 text-sm text-red-600 hidden"></div>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" id="saveEditedRule" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                         Save changes
                     </button>
-                    <button type="button" id="closeEditModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    <button type="button" id="closeEditModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Cancel
                     </button>
                 </div>
@@ -262,6 +191,7 @@
             const stack = [];
             for (let char of str) {
                 if (char === '(') {
+                    
                     stack.push(char);
                 } else if (char === ')') {
                     if (stack.length === 0) return false;
@@ -280,7 +210,7 @@
             }
         }
 
-        function  fetchRules() {
+        function fetchRules() {
             return fetch(`${API_URL}/rules`)
                 .then(response => response.json())
                 .then(rules => {
@@ -290,15 +220,15 @@
                     ruleSelect.innerHTML = '<option value="">Select a rule...</option>';
                     rules.forEach(rule => {
                         const li = document.createElement('li');
-                        li.className = 'list-group-item fade-in';
+                        li.className = 'bg-white border border-gray-200 p-3 rounded-lg fade-in';
                         li.innerHTML = `
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <strong>ID:</strong> ${rule.id}<br>
-                                    <strong>Name:</strong> ${rule.name}<br>
-                                    <strong>Rule:</strong> ${rule.rule_string}
+                                    <strong class="text-gray-700">ID:</strong> <span class="text-gray-600">${rule.id}</span><br>
+                                    <strong class="text-gray-700">Name:</strong> <span class="text-gray-600">${rule.name}</span><br>
+                                    <strong class="text-gray-700">Rule:</strong> <span class="text-gray-600">${rule.rule_string}</span>
                                 </div>
-                                <button class="edit-button px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" data-id="${rule.id}" data-name="${rule.name}" data-rule="${rule.rule_string}">
+                                <button class="edit-button px-3 py-1 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" data-id="${rule.id}" data-name="${rule.name}" data-rule="${rule.rule_string}">
                                     Edit
                                 </button>
                             </div>
@@ -412,7 +342,7 @@
 
         document.getElementById('fetchRulesBtn').addEventListener('click', function() {
             const rulesList = document.getElementById('rulesList');
-            rulesList.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+            rulesList.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-gray-500"></i> Loading...</div>';
             
             fetchRules()
                 .catch(error => {
